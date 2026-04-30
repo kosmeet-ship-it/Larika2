@@ -1,12 +1,12 @@
 {
-  "name": "Ларіка - Освітня гра",
+  "name": "Ларіка",
   "short_name": "Ларіка",
   "description": "Освітня платформа для дітей: математика, англійська",
-  "start_url": "/Larika/",
-  "scope": "/Larika/",
+  "start_url": "/Larika2/",
+  "scope": "/Larika2/",
   "display": "standalone",
-  "background_color": "#764ba2",
-  "theme_color": "#764ba2",
+  "background_color": "#FFD700",
+  "theme_color": "#005BBB",
   "orientation": "portrait",
   "icons": [
     {
