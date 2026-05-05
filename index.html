@@ -252,6 +252,8 @@ body{font-family:'Segoe UI',sans-serif;background:linear-gradient(160deg,#FFD700
 <button class="theme-btn" onclick="filterDictionary('verbs')">Дієслова</button>
 <button class="theme-btn" onclick="filterDictionary('home')">Дім</button>
 <button class="theme-btn" onclick="filterDictionary('nature')">Природа</button>
+<button class="theme-btn" onclick="filterDictionary('pronouns')">Займенники</button>
+<button class="theme-btn" onclick="filterDictionary('interrogative')">Питальні</button>
 </div>
 <div style="margin:20px 0">
 <input type="text" placeholder="English" id="dict-en" style="padding:10px;border-radius:8px;border:2px solid #ddd;margin-right:10px;width:200px">
@@ -260,6 +262,8 @@ body{font-family:'Segoe UI',sans-serif;background:linear-gradient(160deg,#FFD700
 <option value="verbs">Дієслова</option>
 <option value="home">Дім</option>
 <option value="nature">Природа</option>
+<option value="pronouns">Займенники</option>
+<option value="interrogative">Питальні</option>
 </select>
 <button class="btn success" onclick="addWord()">➕ Додати</button>
 </div>
@@ -282,6 +286,7 @@ body{font-family:'Segoe UI',sans-serif;background:linear-gradient(160deg,#FFD700
 <button class="math-level-btn" onclick="startMathLevel('C')"><span>🅲 Рівень C — 0–9 та 10–19</span><span class="math-level-badge">+50⭐</span></button>
 <button class="math-level-btn" onclick="startMathLevel('D')"><span>🅳 Рівень D — 10–99 та 10–99</span><span class="math-level-badge">+70⭐</span></button>
 <button class="math-level-btn" onclick="startMathLevel('E')"><span>🅴 Рівень E — 10–19 та 100–199</span><span class="math-level-badge">+100⭐</span></button>
+<button class="math-level-btn" onclick="startMathLevel('F')"><span>🅵 Рівень F — 10–99 та 10–99</span><span class="math-level-badge">+200⭐</span></button>
 </div>
 <div id="math-game-area" class="hidden">
   <div class="math-question" id="math-question">5 + 3 = ?</div>
@@ -1215,6 +1220,11 @@ D:{name:'D',reward:70,gen:()=>{
 }},
 E:{name:'E',reward:100,gen:()=>{
   const a=r(10)+10,b=r(100)+100,op=rnd(['+','-']);
+  if(op==='-'){const big=Math.max(a,b),small=Math.min(a,b);return{q:`${big} − ${small} = ?`,a:big-small};}
+  return{q:`${a} + ${b} = ?`,a:a+b};
+}},
+F:{name:'F',reward:200,gen:()=>{
+  const a=r(90)+10,b=r(90)+10,op=rnd(['+','-']);
   if(op==='-'){const big=Math.max(a,b),small=Math.min(a,b);return{q:`${big} − ${small} = ?`,a:big-small};}
   return{q:`${a} + ${b} = ?`,a:a+b};
 }}
