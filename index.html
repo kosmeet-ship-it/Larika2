@@ -119,6 +119,8 @@ body{font-family:'Segoe UI',sans-serif;background:linear-gradient(160deg,#FFD700
 .math-progress-fill{height:100%;background:linear-gradient(90deg,#00ff88,#00b4d8);border-radius:4px;transition:width .4s}
 .math-question{position:absolute;top:52px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.9);padding:12px 28px;border-radius:12px;color:#fff;font-size:2.8rem;font-weight:700;text-align:center;white-space:nowrap;border:2px solid rgba(255,255,255,.15);z-index:2}
 .math-answer-btn{position:absolute;top:calc(52px + 74px + 12px);left:4%;width:92%;padding:11px;background:linear-gradient(135deg,#27ae60,#229954);color:#fff;border:none;border-radius:12px;font-size:1.15rem;font-weight:700;cursor:pointer;z-index:2}
+/* Boss */
+#boss-game-area{position:absolute;inset:0}
 .math-input{position:absolute;top:calc(52px + 74px + 12px + 52px + 10px);left:4%;width:92%;background:rgba(255,255,255,.96);border:3px solid #667eea;border-radius:12px;padding:10px;font-size:2.2rem;text-align:center;font-weight:700;z-index:2}
 .math-input.correct{border-color:#27ae60;background:#d4edda}
 .math-input.wrong{border-color:#e74c3c;background:#f8d7da;animation:mshake .5s}
@@ -145,9 +147,10 @@ body{font-family:'Segoe UI',sans-serif;background:linear-gradient(160deg,#FFD700
 <div class="header">
 <div style="font-size:1.5rem;color:#764ba2;font-weight:700">💗 Ларіка</div>
 <div class="stars">⭐ <span id="stars-display">0</span></div>
+<div style="font-size:1rem;color:#2e7d32;font-weight:700">🌱 <span id="seed-count">0</span></div>
+<div style="font-size:1rem;color:#f39c12;font-weight:700">🐝 <span id="bee-count">0</span></div>
 <button class="btn" onclick="showDictionary()">📚 Словник</button>
 <button class="btn" onclick="exportData()">💾 Експорт</button>
-
 </div>
 
 <div class="games">
@@ -287,7 +290,47 @@ body{font-family:'Segoe UI',sans-serif;background:linear-gradient(160deg,#FFD700
 <button class="math-level-btn" onclick="startMathLevel('D')"><span>🅳 Рівень D — 10–99 та 10–99</span><span class="math-level-badge">+70⭐</span></button>
 <button class="math-level-btn" onclick="startMathLevel('E')"><span>🅴 Рівень E — 10–19 та 100–199</span><span class="math-level-badge">+100⭐</span></button>
 <button class="math-level-btn" onclick="startMathLevel('F')"><span>🅵 Рівень F — 10–99 та 10–99</span><span class="math-level-badge">+200⭐</span></button>
+<div style="border-top:2px solid rgba(255,255,255,.2);margin:12px 0"></div>
+<button class="math-level-btn" style="background:linear-gradient(135deg,rgba(180,0,0,.4),rgba(80,0,0,.6));border-color:#ff4444" onclick="showBossSelect()">
+  <span>💀 BOSS — всі рівні A–F</span>
+  <span class="math-level-badge" style="background:linear-gradient(135deg,#ff4444,#cc0000);color:#fff">+🐝</span>
+</button>
 </div>
+
+<!-- BOSS LEVEL SELECT -->
+<div id="boss-level-select" class="math-level-select hidden">
+<h1 style="color:#ff4444;font-size:2rem;margin-bottom:16px">💀 BOSS — оберіть рівень</h1>
+<button class="math-level-btn" style="border-color:#ff6666" onclick="startBoss(1)"><span>💀 Рівень 1 — +50 кожні 10с</span><span class="math-level-badge" style="background:#8B0000;color:#fff">+1🐝</span></button>
+<button class="math-level-btn" style="border-color:#ff6666" onclick="startBoss(2)"><span>💀💀 Рівень 2 — +100 кожні 10с</span><span class="math-level-badge" style="background:#8B0000;color:#fff">+2🐝</span></button>
+<button class="math-level-btn" style="border-color:#ff6666" onclick="startBoss(3)"><span>💀💀💀 Рівень 3 — +150 кожні 10с</span><span class="math-level-badge" style="background:#8B0000;color:#fff">+3🐝</span></button>
+<button class="math-level-btn" style="border-color:#ff6666" onclick="startBoss(4)"><span>💀💀💀💀 Рівень 4 — +200 кожні 10с</span><span class="math-level-badge" style="background:#8B0000;color:#fff">+4🐝</span></button>
+<button class="math-level-btn" style="border-color:#ff6666" onclick="startBoss(5)"><span>💀💀💀💀💀 Рівень 5 — +250 кожні 10с</span><span class="math-level-badge" style="background:#8B0000;color:#fff">+5🐝</span></button>
+<button class="btn danger" style="margin-top:10px;width:100%" onclick="hideBossSelect()">← Назад</button>
+</div>
+
+<!-- BOSS GAME AREA -->
+<div id="boss-game-area" class="hidden">
+  <!-- Boss HP bar -->
+  <div style="position:absolute;top:55px;left:4%;width:92%;z-index:5">
+    <div style="display:flex;justify-content:space-between;color:#fff;font-size:.9rem;margin-bottom:3px">
+      <span style="color:#ff4444;font-weight:700">💀 BOSS</span>
+      <span id="boss-hp-text" style="color:#ff4444;font-weight:700">2000 / 6000</span>
+    </div>
+    <div style="background:rgba(255,255,255,.15);border-radius:8px;height:18px;overflow:hidden;border:2px solid #ff4444">
+      <div id="boss-hp-bar" style="height:100%;background:linear-gradient(90deg,#ff4444,#cc0000);border-radius:6px;transition:width .3s;width:33%"></div>
+    </div>
+    <div id="boss-regen-timer" style="color:#ff9999;font-size:.78rem;text-align:right;margin-top:2px">+50 через 10с</div>
+  </div>
+  <!-- Boss emoji -->
+  <div id="boss-emoji" style="position:absolute;top:95px;left:50%;transform:translateX(-50%);font-size:4rem;animation:mfloat 2s ease-in-out infinite">💀</div>
+  <!-- Question -->
+  <div class="math-question" id="boss-question" style="position:absolute;top:44%">5 + 3 = ?</div>
+  <!-- Answer button -->
+  <button class="math-answer-btn" style="position:absolute;top:57%" onclick="checkBossAnswer()">✅ Відповідь</button>
+  <!-- Input -->
+  <input type="number" class="math-input" id="boss-answer" placeholder="?" autocomplete="off" inputmode="numeric" style="position:absolute;top:68%;left:4%;width:92%">
+</div>
+
 <div id="math-game-area" class="hidden">
   <div class="math-question" id="math-question">5 + 3 = ?</div>
   <button class="math-answer-btn" onclick="checkMathAnswer()">✅ Відповідь</button>
@@ -420,6 +463,11 @@ updateDog();
 function updateUI(){
 const user=getUser();
 document.getElementById('stars-display').textContent=user.stars;
+const sc=document.getElementById('seed-count');
+if(sc)sc.textContent=user.seeds||0;
+const bc=document.getElementById('bee-count');
+if(bc)bc.textContent=user.bees||0;
+updateTreeUI();
 }
 
 function updateDog(){
@@ -1190,6 +1238,159 @@ document.getElementById('dict-list').innerHTML=html||'<p style="text-align:cente
 // ═══════════════════════════════════════════════════════════
 // MATH GAME
 // ═══════════════════════════════════════════════════════════
+// BOSS GAME
+// ═══════════════════════════════════════════════════════════
+const BOSS_MAX_HP=6000;
+const BOSS_START_HP=2000;
+const BOSS_REGEN=[0,50,100,150,200,250]; // per level (index=level)
+let bossState=null;
+let bossRegenInterval=null;
+let bossRegenTimer=null;
+
+function showBossSelect(){
+document.getElementById('math-level-select').classList.add('hidden');
+document.getElementById('boss-level-select').classList.remove('hidden');
+}
+function hideBossSelect(){
+document.getElementById('boss-level-select').classList.add('hidden');
+document.getElementById('math-level-select').classList.remove('hidden');
+}
+
+function startBoss(level){
+document.getElementById('boss-level-select').classList.add('hidden');
+document.getElementById('boss-game-area').classList.remove('hidden');
+
+bossState={
+  level,
+  hp:BOSS_START_HP,
+  maxHp:BOSS_MAX_HP,
+  regen:BOSS_REGEN[level],
+  currentQ:null,
+  currentLevel:null,
+  nextRegenIn:10
+};
+
+// Update HUD
+document.getElementById('math-correct-count').textContent='💀 BOSS';
+document.getElementById('math-hearts').textContent='';
+document.getElementById('math-stars').textContent='';
+
+updateBossUI();
+nextBossQuestion();
+
+// Regen interval — every second count down, every 10s add HP
+bossRegenTimer=10;
+bossRegenInterval=setInterval(()=>{
+  if(!bossState)return;
+  bossRegenTimer--;
+  document.getElementById('boss-regen-timer').textContent=`+${bossState.regen} через ${bossRegenTimer}с`;
+  if(bossRegenTimer<=0){
+    bossRegenTimer=10;
+    bossState.hp=Math.min(bossState.maxHp,bossState.hp+bossState.regen);
+    updateBossUI();
+    // Check defeat
+    if(bossState.hp>=bossState.maxHp){
+      bossDefeat();
+    }
+  }
+},1000);
+
+document.getElementById('boss-answer').onkeypress=e=>{if(e.key==='Enter')checkBossAnswer();};
+}
+
+function updateBossUI(){
+if(!bossState)return;
+const pct=Math.max(0,(bossState.hp/bossState.maxHp)*100);
+document.getElementById('boss-hp-bar').style.width=pct+'%';
+document.getElementById('boss-hp-text').textContent=`${bossState.hp} / ${bossState.maxHp}`;
+// Change bar color based on HP
+const bar=document.getElementById('boss-hp-bar');
+if(pct>60)bar.style.background='linear-gradient(90deg,#ff4444,#cc0000)';
+else if(pct>30)bar.style.background='linear-gradient(90deg,#ff8800,#cc5500)';
+else bar.style.background='linear-gradient(90deg,#ffcc00,#ff8800)';
+}
+
+function nextBossQuestion(){
+if(!bossState)return;
+// Pick random level A-F
+const levels=['A','B','C','D','E','F'];
+const lvlKey=levels[r(levels.length)];
+const q=MATH_LEVELS[lvlKey].gen();
+bossState.currentQ=q;
+bossState.currentLevel=lvlKey;
+document.getElementById('boss-question').textContent=q.q;
+const inp=document.getElementById('boss-answer');
+inp.value='';
+inp.className='math-input';
+inp.style.cssText='position:absolute;top:68%;left:4%;width:92%';
+inp.focus();
+}
+
+function checkBossAnswer(){
+if(!bossState)return;
+const inp=document.getElementById('boss-answer');
+const val=inp.value.trim();
+if(!val)return;
+const answer=parseInt(val,10);
+const correct=bossState.currentQ.a;
+const isCorrect=answer===correct;
+const reward=MATH_LEVELS[bossState.currentLevel].reward;
+
+if(isCorrect){
+  inp.style.borderColor='#27ae60';
+  inp.style.background='#d4edda';
+  bossState.hp=Math.max(0,bossState.hp-reward);
+  updateBossUI();
+  // Check victory
+  if(bossState.hp<=0){
+    bossVictory();
+    return;
+  }
+  setTimeout(()=>nextBossQuestion(),400);
+} else {
+  inp.style.borderColor='#e74c3c';
+  inp.style.background='#f8d7da';
+  setTimeout(()=>{
+    inp.style.borderColor='#667eea';
+    inp.style.background='rgba(255,255,255,.96)';
+    inp.value='';
+    inp.focus();
+  },600);
+}
+}
+
+function bossVictory(){
+clearInterval(bossRegenInterval);
+bossRegenInterval=null;
+const bees=bossState.level;
+const user=getUser();
+if(!user.bees)user.bees=0;
+user.bees+=bees;
+saveUser(user);
+updateUI();
+
+document.getElementById('boss-game-area').classList.add('hidden');
+document.getElementById('victory-amount').textContent=`+${bees}🐝 ПЕРЕМОГА!`;
+document.getElementById('victory').style.display='flex';
+bossState=null;
+}
+
+function bossDefeat(){
+clearInterval(bossRegenInterval);
+bossRegenInterval=null;
+document.getElementById('boss-game-area').classList.add('hidden');
+document.getElementById('math-level-select').classList.remove('hidden');
+bossState=null;
+
+// Show defeat message
+const fb=document.getElementById('math-feedback');
+fb.className='math-feedback show wrong';
+document.getElementById('mfb-title').textContent='💀 ПОРАЗКА!';
+document.getElementById('mfb-detail').textContent='БоСС виживає...';
+setTimeout(()=>{fb.className='math-feedback';},2500);
+}
+
+// ═══════════════════════════════════════════════════════════
 const MATH_MONSTERS=['👾','👹','👺','🤖','👻','💀','🎃','👿','😈','🧟'];
 
 const MATH_LEVELS={
@@ -1242,6 +1443,8 @@ if(type==='math'){
 }
 
 function closeMath(){
+if(bossRegenInterval){clearInterval(bossRegenInterval);bossRegenInterval=null;}
+bossState=null;
 document.getElementById('math-game').classList.remove('is-open');
 document.getElementById('main').style.display='block';
 if(mathState&&mathState.stars>0){
